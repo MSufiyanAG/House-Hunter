@@ -122,5 +122,3 @@ class EncodeData():
 
         for i in range(0, len(count_value)):
             self.__data[count_value[i]] = self.__data[count_value[i]].map(list_of_dict[i])
-
-            

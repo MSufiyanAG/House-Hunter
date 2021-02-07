@@ -32,11 +32,11 @@ class XGBReg():
         self.__model = None
 
     def fit_(self):
-        X = self.__X_train.drop('rent_amount_boxcox',axis=1)
-        y = self.__X_train['rent_amount_boxcox']
+        X = self.__X_train.drop('rent_amount',axis=1)
+        y = self.__X_train['rent_amount']
         self.__dtrain = xgb.DMatrix(X, label=y)
-        X_ = self.__X_test.drop('rent_amount_boxcox',axis=1)
-        y_ = self.__X_test['rent_amount_boxcox']
+        X_ = self.__X_test.drop('rent_amount',axis=1)
+        y_ = self.__X_test['rent_amount']
         self.__dtest = xgb.DMatrix(X_, label=y_)
         self.__model = xgb.train(
             self.__params,
@@ -167,7 +167,7 @@ class XGBReg():
 
 
 start = time.time()
-clean_data = CleanData("house_price.csv")
+clean_data = CleanData("NO-CHANGES\hyd_v2.csv")
 data = clean_data.fit()
 encode_data = EncodeData(data)  
 data = encode_data.fit()
@@ -175,23 +175,14 @@ corr = Correlation(data)
 data = corr.corr_fit()
 split = SplitData(data)
 X, x = split.fit()
-para_x = split.getParameters()
-print(para_x)
 xgb_ = XGBReg(X, x)
 print(xgb_.fit_())
-#choice = input("Enter do you want to save this model.....type 'yes' to save or 'no' to ignore: ")
-#choice = choice.lower()
+choice = input("Enter do you want to save this model.....type 'yes' to save or 'no' to ignore: ")
+choice = choice.lower()
 
-#if choice == 'yes':
-#    xgb_.save_XGBmodel()
-#else:
-#    print("Model not saved")    
-
-
-
-#xgb_.decide_params()
-#mae = xgb_.fit_best()
-#print(mae)
-#print(xgb_.test(para_x))
+if choice == 'yes':
+    xgb_.save_XGBmodel()
+else:
+    print("Model not saved")    
 
 print("Total time taken:", time.time() - start)

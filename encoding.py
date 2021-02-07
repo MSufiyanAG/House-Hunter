@@ -135,7 +135,6 @@ class EncodeData():
         self.__data.replace(to_replace = less,value ="Other",inplace=True)
 
     def __encode(self):
-        list_of_dict = list()
         count_value = ['parking', 'furnishingDesc', 'type_bhk',
                       'facing','waterSupply', 'property_age',
                       'Balcony', 'Bathroom',
@@ -150,9 +149,9 @@ class EncodeData():
                 temp_dict[temp.index[i]] = j
                 j = j - 1        
 
-            list_of_dict.append(temp_dict)
+            self.__list_of_dict.append(temp_dict)
 
         for i in range(0, len(count_value)):
-            self.__data[count_value[i]] = self.__data[count_value[i]].map(list_of_dict[i])    
+            self.__data[count_value[i]] = self.__data[count_value[i]].map(self.__list_of_dict[i])    
 
 

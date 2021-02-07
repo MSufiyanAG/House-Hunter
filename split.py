@@ -11,27 +11,15 @@ class SplitData():
         self.__data = data
         self.__X_train = None
         self.__X_test = None
-        self.__params = None
     def fit(self):
         self.__split_data()
-        self.__boxcox_target()
 
         return self.__X_train, self.__X_test
-
-    def getParameters(self):
-        return self.__params
 
     def __split_data(self):
         self.__X_train, self.__X_test = model_selection.train_test_split(
             self.__data, test_size=0.2, random_state=100
         )     
-
-    def __boxcox_target(self):
-        self.__X_train['rent_amount_boxcox'],self.__params = stats.boxcox(self.__X_train['rent_amount'])
-        self.__X_test['rent_amount_boxcox'] = stats.boxcox(self.__X_test['rent_amount'],self.__params)
-
-        self.__X_train.drop('rent_amount',axis=1,inplace=True)
-        self.__X_test.drop('rent_amount',axis=1,inplace=True)
 
 
 

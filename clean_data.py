@@ -29,14 +29,12 @@ class CleanData():
 
     def __dropColumns(self):
         columns_drop = [
-            "Unnamed: 0", "ownerName", "shortUrl", "loanAvailable", "id", "localityId", "propertyTitle", "completeStreetName", "active",
-            "amenities", "propertyType", "reactivationSource", "facingDesc", "sharedAccomodation", "location", "deposit", "parkingDesc"
+            'combineDescription','weight','id','localityId','shortUrl','propertyTitle','amenities',
+            'location','propertyType','reactivationSource','facingDesc','ownerName','completeStreetName',
+            'parkingDesc','loanAvailable','active','sharedAccomodation','deposit'
         ]
         self.__data.drop(columns_drop, axis=1, inplace=True)
         self.__data.drop(self.__data[self.__data['rent_amount'] <= 0].index ,inplace=True)
-        self.__data.drop(self.__data[self.__data['balconies'] >= 5].index, inplace = True) 
-        self.__data.drop(self.__data[self.__data['maintenanceAmount'] >= self.__data['rent_amount']].index ,inplace=True)
-        self.__data.drop(self.__data[self.__data['maintenanceAmount'] >= 8000].index,inplace=True)
         self.__data.dropna(inplace=True)
 
     def __removeOutliers(self):    

@@ -24,8 +24,9 @@ class EncodeData():
 
     def __binning(self):
         self.__propertyCondition()
-        self.__totalFloors()
-        self.__Floors()
+        self.__propert_size()
+        self.__Floor()
+        self.__balconies()
         self.__bathrooms()
         self.__maintenanceAmount()
         self.__ResetAllIndex()
@@ -33,44 +34,72 @@ class EncodeData():
         self.__encode()
         self.__ResetAllIndex()
 
+    def __balconies(self):
+        self.__data['Balcony']=np.nan
+        self.__data.loc[self.__data['balconies'] == "None", 'Balcony'] = self.__data.loc[self.__data['balconies'] == "None", 'Balcony'].fillna('0')
+        self.__data["balconies"].replace({"None": -1}, inplace=True)
+        self.__data['balconies']=self.__data['balconies'].astype(int)
+        self.__data=self.__data[self.__data['balconies']<10]
+        self.__data.loc[self.__data['balconies'] == 0, 'Balcony'] = self.__data.loc[self.__data['balconies'] == 0, 'Balcony'].fillna('0')
+        self.__data.loc[self.__data['balconies'] == 5, 'Balcony'] = self.__data.loc[self.__data['balconies'] == 5, 'Balcony'].fillna('4+')
+        self.__data.loc[self.__data['balconies'] == 6, 'Balcony'] = self.__data.loc[self.__data['balconies'] == 6, 'Balcony'].fillna('4+')
+        self.__data.loc[self.__data['balconies'] == 1, 'Balcony'] = self.__data.loc[self.__data['balconies'] == 1, 'Balcony'].fillna('1')
+        self.__data.loc[self.__data['balconies'] == 2, 'Balcony'] = self.__data.loc[self.__data['balconies'] == 2, 'Balcony'].fillna('2')
+        self.__data.loc[self.__data['balconies'] == 3, 'Balcony'] = self.__data.loc[self.__data['balconies'] == 3, 'Balcony'].fillna('3')
+        self.__data.loc[self.__data['balconies'] == 4, 'Balcony'] = self.__data.loc[self.__data['balconies'] == 4, 'Balcony'].fillna('4')
+        self.__data.drop('balconies',axis=1,inplace=True)
+
     def __propertyCondition(self):
         self.__data.loc[self.__data['property_age'] == 0, 'condition'] = self.__data.loc[self.__data['property_age'] == 0, 'condition'].fillna('0')  
         self.__data.loc[self.__data['property_age'] <= 5, 'condition'] = self.__data.loc[self.__data['property_age'] <= 5, 'condition'].fillna('1-5')  
         self.__data.loc[self.__data['property_age'] > 5, 'condition'] = self.__data.loc[self.__data['property_age'] > 5, 'condition'].fillna('5+')  
         self.__data.drop('property_age',axis=1,inplace=True)
+        self.__data.rename(columns={'condition': 'property_age'}, inplace=True)
 
     def __ResetAllIndex(self):
         self.__data.reset_index(drop=True, inplace=True)    
 
     def __bathrooms(self):
-        self.__data["bathroom"].replace({6: "5+",7: "5+",8: "5+",10: "5+",12: "5+",14: "5+"}, inplace=True)
-        self.__data['bathroom'] = self.__data['bathroom'].astype(object)
+        self.__data['Bathroom']=np.nan
+        self.__data.loc[self.__data['bathroom'] == 1, 'Bathroom'] = self.__data.loc[self.__data['bathroom'] == 1, 'Bathroom'].fillna('1')
+        self.__data.loc[self.__data['bathroom'] == 2, 'Bathroom'] = self.__data.loc[self.__data['bathroom'] == 2, 'Bathroom'].fillna('2')
+        self.__data.loc[self.__data['bathroom'] == 3, 'Bathroom'] = self.__data.loc[self.__data['bathroom'] == 3, 'Bathroom'].fillna('3')
+        self.__data.loc[self.__data['bathroom'] == 4, 'Bathroom'] = self.__data.loc[self.__data['bathroom'] == 4, 'Bathroom'].fillna('4')
+        self.__data.loc[self.__data['bathroom'] == 5, 'Bathroom'] = self.__data.loc[self.__data['bathroom'] == 5, 'Bathroom'].fillna('5')
+        self.__data.loc[self.__data['bathroom'] > 5, 'Bathroom'] = self.__data.loc[self.__data['bathroom'] > 5, 'Bathroom'].fillna('5+')
+        self.__data.drop('bathroom',axis=1,inplace=True)
          
-    def __totalFloors(self):
-        self.__data.loc[self.__data['totalFloor'] == 0, 'totalfloors'] = self.__data.loc[self.__data['totalFloor'] == 0, 'totalfloors'].fillna('0')
-        self.__data.loc[self.__data['totalFloor'] <6, 'totalfloors'] = self.__data.loc[self.__data['totalFloor'] <6, 'totalfloors'].fillna('1-5')
-        self.__data.loc[self.__data['totalFloor'] <=14, 'totalfloors'] = self.__data.loc[self.__data['totalFloor'] <=14, 'totalfloors'].fillna('6-14') 
-        self.__data.loc[self.__data['totalFloor'] >14, 'totalfloors'] = self.__data.loc[self.__data['totalFloor'] >14, 'totalfloors'].fillna('14+')
-        self.__data.drop('totalFloor',axis=1,inplace=True)
-
-    def __Floors(self):
-        self.__data.loc[self.__data['floor'] == 0, 'Floor'] = self.__data.loc[self.__data['floor'] == 0, 'Floor'].fillna('0')
-        self.__data.loc[self.__data['floor'] <=7, 'Floor'] = self.__data.loc[self.__data['floor'] <=7, 'Floor'].fillna('1-7')
-        self.__data.loc[self.__data['floor'] <=19, 'Floor'] = self.__data.loc[self.__data['floor'] <=19, 'Floor'].fillna('8-19')
-        self.__data.loc[self.__data['floor'] >19, 'Floor'] = self.__data.loc[self.__data['floor'] >19, 'Floor'].fillna('19+')
-        self.__data.drop('floor',axis=1,inplace=True)
 
     def __maintenanceAmount(self):
         self.__data["maintenanceAmount"].replace(to_replace = "None", value ='0', inplace=True)
-        self.__data["maintenanceAmount"] = pd.to_numeric(self.__data["maintenanceAmount"])
-        self.__data.loc[self.__data['maintenanceAmount'] == 0, 'maintenanceAmt'] = self.__data.loc[self.__data['maintenanceAmount'] == 0, 'maintenanceAmt'].fillna('0')    
-        self.__data.loc[self.__data['maintenanceAmount'] <= 500, 'maintenanceAmt'] = self.__data.loc[self.__data['maintenanceAmount'] <= 500, 'maintenanceAmt'].fillna('0-500')
-        self.__data.loc[self.__data['maintenanceAmount'] <= 1000, 'maintenanceAmt'] = self.__data.loc[self.__data['maintenanceAmount'] <= 1000, 'maintenanceAmt'].fillna('500-1000')
-        self.__data.loc[self.__data['maintenanceAmount'] <= 1500, 'maintenanceAmt'] = self.__data.loc[self.__data['maintenanceAmount'] <= 1500, 'maintenanceAmt'].fillna('1000-1500')
-        self.__data.loc[self.__data['maintenanceAmount'] <= 2000, 'maintenanceAmt'] = self.__data.loc[self.__data['maintenanceAmount'] <= 2000, 'maintenanceAmt'].fillna('1500-2000')
-        self.__data.loc[self.__data['maintenanceAmount'] <= 3000, 'maintenanceAmt'] = self.__data.loc[self.__data['maintenanceAmount'] <= 3000, 'maintenanceAmt'].fillna('2000-3000')
-        self.__data.loc[self.__data['maintenanceAmount'] > 3000, 'maintenanceAmt'] = self.__data.loc[self.__data['maintenanceAmount'] > 3000, 'maintenanceAmt'].fillna('3000+')
-        self.__data.drop('maintenanceAmount',axis=1, inplace=True)
+        self.__data['maintenanceAmount'] = self.__data['maintenanceAmount'].astype(int)
+        self.__data=self.__data[(self.__data['maintenanceAmount']>=0) & (self.__data['maintenanceAmount']<3000)]
+        for i in range(0,3000,100):
+            self.__data.loc[(self.__data['maintenanceAmount'] >= i) & (self.__data['maintenanceAmount'] < i+100), 'maintenanceAmount'] = i
+        self.__data['maintenanceAmount']=self.__data['maintenanceAmount'].astype(object)
+
+    def __propert_size(self):
+        self.__data=self.__data[(self.__data['property_size']>=100) & (self.__data['property_size']<=2000)]
+        for i in range(0,2000,100):
+            self.__data.loc[(self.__data['property_size'] >= i) & (self.__data['property_size'] < i+100), 'property_size'] = i  
+
+        self.__data['property_size']=self.__data['property_size'].astype(object)    
+
+    def __Floor(self):
+        self.__data['totalFloor'] = self.__data['totalFloor'].astype(object)
+        self.__data['floor'] = self.__data['floor'].astype(object)
+        self.__data['floor/totalFloor']=np.nan
+        self.__data['floor/totalFloor'] = self.__data.floor.astype(str).str.cat(self.__data.totalFloor.astype(str),sep="/")
+        ll=self.__data['floor/totalFloor'].value_counts()
+        self.__data.drop(['floor','totalFloor'],axis=1,inplace=True)
+
+        less=[]
+        for key in ll.keys():
+            if(ll[key]<=20):
+                    less.append(key)
+
+        self.__data = self.__data[~self.__data["floor/totalFloor"].isin(less)]            
+
 
     def __cleanLocality(self):
         loc=self.__data["locality"].value_counts()
@@ -84,30 +113,33 @@ class EncodeData():
         self.__data['locality']=self.__data['locality'].str.upper()
         self.__data.locality = self.__data.locality.str.strip()
         self.__data=pd.concat([self.__data, self.__data['locality'].str.split(', ', expand=True)], axis=1)
-        for i in range(1,6):
+        for i in range(1,3):
             self.__data[i] = np.where((self.__data[i].notnull()), self.__data[i],  self.__data[0])
 
         self.__data=self.__data.loc[self.__data[0] != 'TELANGANA']
-        self.__data.drop([ 'locality', 1,2,3,4,5,6,7,8],axis=1,inplace=True)
+        self.__data=self.__data.loc[self.__data[0] != 'HYDERABAD']
+        self.__data.drop([ 'locality', 1,2,3,4,5,6],axis=1,inplace=True)
         self.__data.rename(columns={0: 'locality'}, inplace=True)
         self.__data.locality = self.__data.locality.str.strip()
-        features=self.__data.columns
-        for feature in features:
-            if self.__data[feature].dtypes == bool:
-                self.__data[feature] = self.__data[feature].map({True: 1, False: 0})
+        self.__data['locality'] = self.__data['locality'].str.replace(" ","")
 
+        loc=self.__data["locality"].value_counts()
+        
         less=[]
-        for key in self.__data["locality"].value_counts().keys():
-            if(self.__data["locality"].value_counts()[key]<10):
-                less.append(key)        
+        for key in loc.keys():
+            if(loc[key]<=100):
+                less.append(key)
+
+        self.__data = self.__data[~self.__data.locality.isin(less)]          
 
         self.__data.replace(to_replace = less,value ="Other",inplace=True)
 
     def __encode(self):
         list_of_dict = list()
-        count_value = ['bathroom','facing', 'furnishingDesc',
-            'parking', 'type_bhk', 'waterSupply', 'condition',
-            'maintenanceAmt', 'totalfloors', 'Floor','locality']
+        count_value = ['parking', 'furnishingDesc', 'type_bhk',
+                      'facing','waterSupply', 'property_age',
+                      'Balcony', 'Bathroom',
+                      'floor/totalFloor','locality','maintenanceAmount','property_size']
         for value in count_value:
             temp = self.__data.groupby(value)['rent_amount'].mean()
             temp = temp.to_frame()
@@ -121,4 +153,6 @@ class EncodeData():
             list_of_dict.append(temp_dict)
 
         for i in range(0, len(count_value)):
-            self.__data[count_value[i]] = self.__data[count_value[i]].map(list_of_dict[i])
+            self.__data[count_value[i]] = self.__data[count_value[i]].map(list_of_dict[i])    
+
+

@@ -3,6 +3,26 @@ import pandas as pd
 import numpy as np
 import xgboost as xgb
 import scipy
+from PIL import Image
+from visual import Visual
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df=pd.read_csv('house_price.csv')
+
+EA=Visual(df)
+
+
+
+
+image = Image.open('HH.png')
+st.image(image, use_column_width=True)
+html_temp = """
+    <div style="background-color:SeaGreen;padding:10px">
+    <h2 style="color:white;text-align:center;">Streamlit Price Prediction ML App </h2>
+    </div>
+    """
+
 
 
 parking_col = st.selectbox(label='Select PARKING:',options=["BOTH","TWO_WHEELER","FOUR_WHEELER","NONE"])
@@ -114,4 +134,46 @@ def testing_xgb(data):
 acc = testing_xgb([parking, balcony, furnishing, bhk, bathroom, swimming, lift, gym, maintanance, totalfloors, floor, maintananceAmt, locality]) 
 print(acc)
 if st.button('predict'):
-        st.success("The output is {}".format(acc))
+    st.success("The output is {}".format(acc))
+
+
+
+#graphs        
+st.sidebar.title('Graphs')
+
+if st.sidebar.checkbox('Graphs'):
+    st.title('Graphs')
+        
+        
+if st.sidebar.checkbox('Count Plot'):
+            
+    st.subheader('Count Plot')
+    choice = st.selectbox(label='Select the column for CountPlot:',options=df.columns)
+            
+    fig = EA.countplot(choice)
+    st.pyplot(fig)
+            
+            
+if st.sidebar.checkbox('Distribution Plot'):
+            
+    st.subheader('Distribution Plot')
+    choice = st.selectbox(label='Select the column for distribution Plot:',options=df.columns)
+    
+    fig = EA.distplot(choice)
+    st.pyplot(fig)
+
+
+
+
+def about():
+    st.write(
+        '''
+        **Cartoonizer** 
+        How does it work ?? 
+        1.Apply a bilateral filter to reduce the color palette of the image.
+        2.Convert the original color image into grayscale.
+        3.Apply a median blur to reduce image noise.
+        4.Use adaptive thresholding to detect and emphasize the edges in an edge mask.
+        5.Combine the color image from step 1 with the edge mask from step 4.
+        '''
+    )

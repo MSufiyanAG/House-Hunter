@@ -1,0 +1,14 @@
+body {
+    color:#343148ff ;
+    background-color:  #d7c49eff;
+}
+
+.sidebar .sidebar-content {
+    background-image: linear-gradient(#343148ff,#343148ff);
+    color: #d7c49eff;
+    
+}
+
+.stTextInput>div>div>input {
+    color: #ff0000;
+}

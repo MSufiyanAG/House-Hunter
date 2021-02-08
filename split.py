@@ -24,7 +24,7 @@ class SplitData():
 
 
 """ start = time.time()
-clean_data = CleanData("house_price.csv")
+clean_data = CleanData("hyd_v2.csv")
 data = clean_data.fit()
 encode_data = EncodeData(data)  
 data = encode_data.fit()
@@ -32,7 +32,7 @@ corr = Correlation(data)
 data = corr.corr_fit()
 split = SplitData(data)
 X, x = split.fit()
-print(split.getParameters())
+#x.to_csv("X_test.csv",index=False)
 
 
 print("Total time taken:", time.time() - start) """

@@ -155,4 +155,12 @@ class EncodeData():
         for i in range(0, len(count_value)):
             self.__data[count_value[i]] = self.__data[count_value[i]].map(self.__list_dict[i])    
 
+""" start = time.time()
+clean_data = CleanData("NO-CHANGES\hyd_v2.csv")
+data = clean_data.fit()
+encode_data = EncodeData(data)  
+data = encode_data.fit()
+print(encode_data.showListDict())
 
+
+print("Total time taken:", time.time() - start) """

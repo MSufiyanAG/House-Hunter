@@ -14,6 +14,7 @@ import shap
 from predict import testing_xgb
 from visualize import ExploratoryAnalysis
 import plotly.express as px
+import webbrowser
 
 st.set_option('deprecation.showfileUploaderEncoding', False)
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -70,6 +71,11 @@ def main():
                     -------------------------------
 
                 ''')
+
+
+    gitHub = 'https://github.com/MSufiyanAG/House-Hunter'
+    if st.sidebar.button('GITHUB Link'):
+        webbrowser.open_new_tab(gitHub)
     
 
 
@@ -265,8 +271,7 @@ def main():
 
         st.write("-----------")
         st.header("DATA can be found here : ")
-        import webbrowser
-
+        
         url = 'https://www.nobroker.in/property/sale/hyderabad/Hyderabad?searchParam=W3sibGF0IjoxNy4zODUwNDQsImxvbiI6NzguNDg2NjcxLCJwbGFjZUlkIjoiQ2hJSng5THI2dHFaeXpzUnd2dTZrb08zazY0IiwicGxhY2VOYW1lIjoiSHlkZXJhYmFkIn1d&radius=2.0'
         if st.button('NO BROKER'):
             webbrowser.open_new_tab(url)

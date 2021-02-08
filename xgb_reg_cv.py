@@ -50,8 +50,6 @@ class XGBReg():
 
     def save_XGBmodel(self):
         self.__model.save_model("XGB.model")
-        file_name = "xgb_reg.pkl"
-        pickle.dump(self.__model, open(file_name, "wb"))
 
    
 

@@ -1,19 +1,24 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 import xgboost as xgb
 import scipy
 from PIL import Image
-from visual import Visual
 import matplotlib.pyplot as plt
 import seaborn as sns
 import time
 import base64
 from pathlib import Path
+import shap
+from predict import testing_xgb
+from visualize import ExploratoryAnalysis
+import plotly.express as px
 
 st.set_option('deprecation.showfileUploaderEncoding', False)
-df=pd.read_csv('hyd_v2.csv')
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
+EA = ExploratoryAnalysis()
 
 def local_css(file_name):
     with open(file_name) as f:
@@ -41,8 +46,32 @@ def main():
     )
 
     
-    activities=["[$$-PREDICTION-$$]","[-ABOUT-]","[-VISUALISATION-]"]
+    activities=["[$$-PREDICTION-$$]","[-ABOUT-]","[-VISUALISATION-]","[-HYDERABAD-]"]
+    graphs=["HEAT-MAP","COUNT-PLOT","DISTRIBUTION-PLOT","SCATTER-PLOT","BOX-PLOT"]
     choice = st.sidebar.selectbox("Select",activities)
+
+
+
+    st.sidebar.write("----------------------------")
+
+    st.sidebar.title('**CONTRIBUTORS**')
+    st.sidebar.write('''
+                    -------------------------------
+
+                    **Syed Mahboob Abrar Ali**                    
+                    1604-18-733-088
+
+                    **Mohd Abdul Azeem**                         
+                    1604-18-733-089
+                    
+                    **Mohammed Sufiyan Abdullah Ghori**          
+                    1604-18-733-094
+
+                    -------------------------------
+
+                ''')
+    
+
 
 
 
@@ -102,7 +131,7 @@ def main():
         f_tf_col = st.selectbox(label='',options=['0/0', '0/1', '0/2', '0/3', '0/4',
                                                 '0/5','1/1','1/2','1/3','1/4','1/5',
                                                 '1/6','2/2', '2/3', '2/4', '2/5', '2/6',
-                                                '3/3', '3/4', '3,4','3/6','4/4', '4/5',
+                                                '3/3', '3/4', '3/5','3/6','4/4', '4/5',
                                                 '4/6','5/5', '5/6', '6/6'])
         st.write("--------------------------------")
 
@@ -175,61 +204,157 @@ def main():
         propertySize=propertySize_dict.get(propertySize_col)
         water=water_dict.get(water_col)
 
-
-        #############################
-
-        def testing_xgb(data):
-            data_list = list((np.array(data)).reshape(-1))
-
-            # load bst model
-            bst_model = xgb.Booster({'bthread': 2})
-            bst_model.load_model('XGB.model')
-
-
-            df = pd.DataFrame()
-            col_names = ['f%d' % i for i in range(12)]
-            df = df.append(pd.Series(data=data_list, index=col_names), ignore_index=True)
-
-            result1 = bst_model.predict(xgb.DMatrix(df))
-    
-            return np.around(int(result1))
-
-        #################################
-            
-        acc = testing_xgb([furnishing,maintanance,lift,maintananceAmt,parking,propertySize,bhk,water,balcony,bathroom,f_tf,locality]) 
-        print(acc)
+        acc, df, bst_model = testing_xgb([furnishing,maintanance,lift,maintananceAmt,parking,propertySize,bhk,water,balcony,bathroom,f_tf,locality]) 
         if st.button(' HUNT FOR HOUSES '):
             with st.spinner(text=":tophat: Our HOUSE HUNTERS are at work :tophat:"):
                 time.sleep(1)
                 st.warning(':space_invader:   :house:   :space_invader: ')
                 st.balloons()
-                st.success("Rent Price: {} ".format(acc))
+                st.success("Predicted Rent Price : ₹ {}".format(acc))
+                st.success("Rent can vary between ₹ {} -- ₹ {} ".format(acc-1500,acc+1500))
+                
+                st.write("-----------")
+                st.success("MODEL INTERPRETABILITY")
+
+                def st_shap(plot, height=None):
+                    shap_html = f"<head>{shap.getjs()}</head><body>{plot.html()}</body>"
+                    components.html(shap_html, height=height)    
+
+                X_test=pd.read_csv('X_test.csv')
+                X_test.drop(['rent_amount'],axis=1,inplace=True)   
+
+                df.columns = X_test.columns    
+                X_test = pd.concat([X_test, df], ignore_index=True)
+                explainer = shap.TreeExplainer(bst_model)
+                shap_values = explainer.shap_values(X_test)
+                
+                st_shap(shap.force_plot(explainer.expected_value, shap_values[len(X_test.index) - 1,:], X_test.iloc[len(X_test.index) - 1,:]))        
 
 
     elif choice == "[-ABOUT-]":
 
         st.title("\n ** :tophat: HouseHunter :tophat: ** \n")
-        st.header("\n ** :house: How Do our House Hunters Predict Rent Prices for you ? :house: **  \n")
-        st.write(
-            '''
-            
-            1. Step1
+        st.write("-----------")
+        st.header("PROBLEM")
+        st.write('''
 
-            2. Step2
+                :o: When people migrate to new cities in search of jobs , 
+                        they tend to look for Rental Houses rather than purchasing 
+                        the property right away.
 
-            3. Step3
+                :o: Finding an appropriate Rental House can be a 
+                        very tedious task especially in a new city.
 
-            4. Step4
+                :o: It’s almost impossible to predict and find a
+                        suitable house for rent within our Budget and needs.
 
-            5. Step5
+                ''')
 
-            6. And the Rest is MAGIC !
-            '''
-            )
+
+        st.write("-----------")
+        st.header("SOLUTION")
+        st.write('''
+                :ballot_box_with_check: We propose to Digitize this process 
+
+                :ballot_box_with_check: A Web Application that can predict House Rental Prices in Hyderabad City
+
+                :ballot_box_with_check: This Web App will predict the House Rental Price based on customers preferences and needs
+
+                ''')
+
+
+        st.write("-----------")
+        st.header("DATA can be found here : ")
+        import webbrowser
+
+        url = 'https://www.nobroker.in/property/sale/hyderabad/Hyderabad?searchParam=W3sibGF0IjoxNy4zODUwNDQsImxvbiI6NzguNDg2NjcxLCJwbGFjZUlkIjoiQ2hJSng5THI2dHFaeXpzUnd2dTZrb08zazY0IiwicGxhY2VOYW1lIjoiSHlkZXJhYmFkIn1d&radius=2.0'
+        if st.button('NO BROKER'):
+            webbrowser.open_new_tab(url)
+
+
+        st.write("-----------")
+        st.header("LIFE CYCLE")
+        image1 = Image.open('life.png')
+        st.image(image1, use_column_width=True)
+        html_temp = """
+        <div style="background-color:SeaGreen;padding:10px">
+        <h2 style="color:white;text-align:center;">Streamlit Price Prediction ML App </h2>
+        </div>
+        """
+        st.write("-----------")
+
+
+
+
 
 
     elif choice == "[-VISUALISATION-]" :
-        st.write("pass")
+
+        st.title("** VISUALISATION **")
+        graphChoice = st.selectbox("Select",graphs)
+        
+
+        if graphChoice == 'HEAT-MAP':
+            st.write("-----------")
+            st.header("CORRELATION HEAT MAP")
+            fig=EA.heatmap()
+            st.pyplot()
+            st.write("-----------")
+
+
+        elif graphChoice == 'COUNT-PLOT':
+
+            st.write("---------------")
+            st.header(" COUNT PLOT ")
+            choice = st.selectbox(label='',options=['balconies','bathroom','facing','floor','furnishingDesc','gym','isMaintenance','lift','parking','property_age','totalFloor','type_bhk','waterSupply'])
+            fig = EA.countplot(choice)
+            st.pyplot()
+            st.write("---------------")
+
+        elif graphChoice == 'DISTRIBUTION-PLOT':
+
+            st.write("---------------")
+            st.header(" DISTRIBUTION PLOT ")
+            choice = st.selectbox(label='',options=['maintenanceAmount','property_size','rent_amount'])
+            fig = EA.distplot(choice)
+            st.pyplot()
+            st.write("---------------")
+
+        elif graphChoice == 'SCATTER-PLOT':
+    
+            st.write("---------------")
+            st.header(" SCATTER PLOT ")
+            choice_1 = st.selectbox(label='First column ',options=['maintenanceAmount','property_size','rent_amount'])
+            choice_2 = st.selectbox(label='Second column ',options=['maintenanceAmount','property_size','rent_amount'])        
+            fig = EA.scatterplot(choice_1, choice_2)
+            st.pyplot()
+            st.write("---------------")
+
+
+        elif graphChoice == 'BOX-PLOT':
+
+            st.header(" BOX PLOT ")
+            st.write("---------------")
+            choice_1 = st.selectbox(label='Column VS RENT_AMOUNT',options=['balconies','bathroom','facing','floor','furnishingDesc','gym','isMaintenance','lift','parking','property_age','totalFloor','type_bhk','waterSupply'])
+            #choice_2 = st.selectbox(label='Select the second column for Box plot:',options=['balconies','bathroom','facing','floor','furnishingDesc','gym','isMaintenance','lift','parking','property_age','totalFloor','type_bhk','waterSupply'])        
+            fig = EA.boxplot(choice_1, 'rent_amount')
+            st.pyplot()
+            st.write("---------------")
+
+
+
+
+    elif choice=='[-HYDERABAD-]':
+        st.title("** HYDERABAD MAP **")
+        st.write("-------------------")
+        fig = EA.plotMap()
+        st.plotly_chart(fig)
+
+
+
+# ["COUNT-PLOT","DISTRIBUTION-PLOT","LINE-PLOT","BOX-PLOT"]
+
+
 
 
 

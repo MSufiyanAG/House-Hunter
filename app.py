@@ -8,6 +8,8 @@ from visual import Visual
 import matplotlib.pyplot as plt
 import seaborn as sns
 import time
+import base64
+from pathlib import Path
 
 st.set_option('deprecation.showfileUploaderEncoding', False)
 df=pd.read_csv('hyd_v2.csv')
@@ -22,7 +24,23 @@ local_css("style.css")
 
 def main():
 
-    st.sidebar.title('MENU')
+
+    def img_to_bytes(img_path):
+        img_bytes = Path(img_path).read_bytes()
+        encoded = base64.b64encode(img_bytes).decode()
+        return encoded
+
+    st.sidebar.title('**MENU**')
+
+    sidebar=("https://media.giphy.com/media/l0IylQoMkcbZUbtKw/giphy.gif")
+    sidebar_html = "<img  style= 'vertical-align: bottom' src='data:image/gif;base64,{}' class='img-fluid'>".format(
+    img_to_bytes("hh.gif")
+        )
+    st.sidebar.markdown(
+    sidebar_html, unsafe_allow_html=True,
+    )
+
+    
     activities=["[$$-PREDICTION-$$]","[-ABOUT-]","[-VISUALISATION-]"]
     choice = st.sidebar.selectbox("Select",activities)
 
@@ -212,6 +230,10 @@ def main():
 
     elif choice == "[-VISUALISATION-]" :
         st.write("pass")
+
+
+
+    
 
 
 

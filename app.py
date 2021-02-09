@@ -15,6 +15,7 @@ from predict import testing_xgb
 from visualize import ExploratoryAnalysis
 import plotly.express as px
 import webbrowser
+from bokeh.models.widgets import Div
 
 st.set_option('deprecation.showfileUploaderEncoding', False)
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -72,12 +73,20 @@ def main():
 
                 ''')
 
+        
+    #gitHub = 'https://github.com/MSufiyanAG/House-Hunter'
+    #if st.sidebar.butotn('GITHUB Link'):
+        #webbrowser.open_new_tab(gitHub)
 
-    gitHub = 'https://github.com/MSufiyanAG/House-Hunter'
     if st.sidebar.button('GITHUB Link'):
-        webbrowser.open_new_tab(gitHub)
-    
+        js="window.open('https://github.com/MSufiyanAG/House-Hunter')"
+        html='<img src onerror="{}">'.format(js)
+        div = Div(text=html)
+        st.bokeh_chart(div)
 
+
+        
+    
 
 
 
@@ -274,7 +283,10 @@ def main():
         
         url = 'https://www.nobroker.in/property/sale/hyderabad/Hyderabad?searchParam=W3sibGF0IjoxNy4zODUwNDQsImxvbiI6NzguNDg2NjcxLCJwbGFjZUlkIjoiQ2hJSng5THI2dHFaeXpzUnd2dTZrb08zazY0IiwicGxhY2VOYW1lIjoiSHlkZXJhYmFkIn1d&radius=2.0'
         if st.button('NO BROKER'):
-            webbrowser.open_new_tab(url)
+            js="window.open('https://www.nobroker.in/property/sale/hyderabad/Hyderabad?searchParam=W3sibGF0IjoxNy4zODUwNDQsImxvbiI6NzguNDg2NjcxLCJwbGFjZUlkIjoiQ2hJSng5THI2dHFaeXpzUnd2dTZrb08zazY0IiwicGxhY2VOYW1lIjoiSHlkZXJhYmFkIn1d&radius=2.0')"
+            html='<img src onerror="{}">'.format(js)
+            div = Div(text=html)
+            st.bokeh_chart(div)
 
 
         st.write("-----------")

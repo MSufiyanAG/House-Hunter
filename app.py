@@ -217,7 +217,7 @@ def main():
                 st.warning(':space_invader:   :house:   :space_invader: ')
                 st.balloons()
                 st.success("Predicted Rent Price : ₹ {}".format(acc))
-                st.success("Rent can vary between ₹ {} -- ₹ {} ".format(acc-1500,acc+1500))
+                st.success("Rent can vary between ₹ {} -- ₹ {} ".format(acc-2000,acc+2000))
                 
                 st.write("-----------")
                 st.success("MODEL INTERPRETABILITY")

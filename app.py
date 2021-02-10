@@ -228,6 +228,8 @@ def main():
                 st.success("Predicted Rent Price : ₹ {}".format(acc))
                 st.success("Rent can vary between ₹ {} -- ₹ {} ".format(acc-2000,acc+2000))
                 
+ 
+                
 
 
     elif choice == "[-ABOUT-]":

@@ -142,7 +142,7 @@ def main():
 
 
 
-        st.header("**FLOORS / TOTAL FLOORS**")
+        st.header("** FLOOR **")
         f_tf_col = st.selectbox(label='',options=['0/0', '0/1', '0/2', '0/3', '0/4',
                                                 '0/5','1/1','1/2','1/3','1/4','1/5',
                                                 '1/6','2/2', '2/3', '2/4', '2/5', '2/6',
@@ -192,7 +192,7 @@ def main():
         st.write('\n\n')
 
 
-        yes_no_dict={'YES':1,'NO':0}
+        yes_no_dict={'YES':True,'NO':False}
         balconies_dict={'4': 6, '3': 5, '2': 4, '4+': 3, '1': 2, '0': 1}
         bath_dict={'5+': 5, '4': 4, '3': 3, '2': 2, '1': 1}
         furnsihing_dict= {"FULL FURNISHED": 3, 'SEMI FURNISHED': 2, 'UN FURNISHED': 1}
@@ -228,22 +228,6 @@ def main():
                 st.success("Predicted Rent Price : ₹ {}".format(acc))
                 st.success("Rent can vary between ₹ {} -- ₹ {} ".format(acc-2000,acc+2000))
                 
-                st.write("-----------")
-                st.success("MODEL INTERPRETABILITY")
-
-                def st_shap(plot, height=None):
-                    shap_html = f"<head>{shap.getjs()}</head><body>{plot.html()}</body>"
-                    components.html(shap_html, height=height)    
-
-                X_test=pd.read_csv('X_test.csv')
-                X_test.drop(['rent_amount'],axis=1,inplace=True)   
-
-                df.columns = X_test.columns    
-                X_test = pd.concat([X_test, df], ignore_index=True)
-                explainer = shap.TreeExplainer(bst_model)
-                shap_values = explainer.shap_values(X_test)
-                
-                st_shap(shap.force_plot(explainer.expected_value, shap_values[len(X_test.index) - 1,:], X_test.iloc[len(X_test.index) - 1,:]))        
 
 
     elif choice == "[-ABOUT-]":

@@ -229,10 +229,14 @@ def main():
                 X_test=pd.read_csv('X_test.csv')
                 X_test.drop(['rent_amount'],axis=1,inplace=True)   
 
-                df.columns = X_test.columns    
+                neworder = ["f0","f1","f2","f3","f4","f5","f6","f7","f8","f9","f10","f11"]
+                df=df.reindex(columns=neworder) 
+                df.columns = X_test.columns   
                 X_test = pd.concat([X_test, df], ignore_index=True)
                 explainer = shap.TreeExplainer(bst_model)
                 shap_values = explainer.shap_values(X_test)
+
+                st.write(X_test.iloc[len(X_test.index) - 1,:])
                 
                 st_shap(shap.force_plot(explainer.expected_value, shap_values[len(X_test.index) - 1,:], X_test.iloc[len(X_test.index) - 1,:]))        
 

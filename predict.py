@@ -2,6 +2,7 @@ import scipy
 import xgboost as xgb
 import numpy as np
 import pandas as pd
+pd.set_option("display.max_columns",None)
 import warnings 
 warnings.filterwarnings('ignore')
 
@@ -20,3 +21,13 @@ def testing_xgb(data):
     result1 = bst_model.predict(xgb.DMatrix(df))
     
     return np.around(int(result1)), df, bst_model
+    #return np.around(int(result1)),df
+
+# print(pd.read_csv("X_test.csv").columns)
+# res, df = testing_xgb([2,True,True,22,3,13,4,4,24,4,2,25])
+# print(df)
+
+# neworder = ["f0","f1","f2","f3","f4","f5","f6","f7","f8","f9","f10","f11"]
+# df=df.reindex(columns=neworder)
+# print(df)
+

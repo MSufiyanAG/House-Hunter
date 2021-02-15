@@ -111,7 +111,7 @@ def main():
         st.write("--------------------------------")
 
         st.header("**FURNISHING**")
-        furnsihing_col = st.selectbox(label='',options=["UN FURNISHED","SEMI FURNISHED","FULL FURNISHED"])
+        furnsihing_col = st.selectbox(label='',options=["UN FURNISHED","SEMI FURNISHED","FULLY FURNISHED"])
         st.write("--------------------------------")
 
         st.header("**BHK:**")
@@ -195,7 +195,7 @@ def main():
         yes_no_dict={'YES':True,'NO':False}
         balconies_dict={'4': 6, '3': 5, '2': 4, '4+': 3, '1': 2, '0': 1}
         bath_dict={'5+': 5, '4': 4, '3': 3, '2': 2, '1': 1}
-        furnsihing_dict= {"FULL FURNISHED": 3, 'SEMI FURNISHED': 2, 'UN FURNISHED': 1}
+        furnsihing_dict= {"FULLY FURNISHED": 3, 'SEMI FURNISHED': 2, 'UN FURNISHED': 1}
         parking_dict= {'FOUR_WHEELER': 4, 'BOTH': 3, 'TWO_WHEELER': 2, 'NONE': 1}
         bhk_dict={'4+BHK': 6, '4BHK': 5, '3BHK': 4, '2BHK': 3, '1BHK': 2, '1RK': 1}
         water_dict={'CORPORATION & BORE': 4, 'BOREWELL': 3, 'CORPORATION': 2, 'None': 1}
@@ -300,6 +300,14 @@ def main():
         if graphChoice == 'HEAT-MAP':
             st.write("-----------")
             st.header("CORRELATION HEAT MAP")
+            st.write('''
+            Checking correlations is an important part of the exploratory data analysis process. 
+
+            This analysis is one of the methods used to decide which features affect the target variable the most, 
+            and in turn, get used in predicting this target variable. 
+
+            In other words, it’s a commonly-used method for feature selection in machine learning.
+            ''')
             fig=EA.heatmap()
             st.pyplot()
             st.write("-----------")
@@ -309,6 +317,11 @@ def main():
 
             st.write("---------------")
             st.header(" COUNT PLOT ")
+            st.write('''
+            A countplot is kind of like a histogram or a bar graph for some categorical area. 
+            
+            It simply shows the number of occurrences of an item based on a certain type of category.
+            ''')
             choice = st.selectbox(label='',options=['balconies','bathroom','facing','floor','furnishingDesc','gym','isMaintenance','lift','parking','property_age','totalFloor','type_bhk','waterSupply'])
             fig = EA.countplot(choice)
             st.pyplot()
@@ -318,6 +331,11 @@ def main():
 
             st.write("---------------")
             st.header(" DISTRIBUTION PLOT ")
+            st.write('''
+            A distribution plot, as the name suggests is used for one purpose .
+
+            i.e. displaying the distribution and range of data values over a scale.
+            ''')
             choice = st.selectbox(label='',options=['maintenanceAmount','property_size','rent_amount'])
             fig = EA.distplot(choice)
             st.pyplot()
@@ -327,6 +345,12 @@ def main():
     
             st.write("---------------")
             st.header(" SCATTER PLOT ")
+            st.write('''
+            Scatter Plot represents the relationship between two continuous values, respectively. 
+            
+            It depicts how one data variable gets affected by the other data variable in every fraction of the value of the data set.
+
+            ''')
             choice_1 = st.selectbox(label='First column ',options=['maintenanceAmount','property_size','rent_amount'])
             choice_2 = st.selectbox(label='Second column ',options=['maintenanceAmount','property_size','rent_amount'])        
             fig = EA.scatterplot(choice_1, choice_2)
@@ -336,7 +360,23 @@ def main():
 
         elif graphChoice == 'BOX-PLOT':
 
+            st.write("---------------")
             st.header(" BOX PLOT ")
+            st.write('''
+            A boxplot is a standardized way of displaying the distribution of data based on a five number summary
+            
+             (“minimum”, first quartile (Q1), median, third quartile (Q3), and “maximum”). 
+             
+             It can tell you about your outliers and what their values are.
+            ''')
+            image = Image.open('box.jpeg')
+            st.image(image, use_column_width=True)
+            html_temp = """
+            <div style="background-color:SeaGreen;padding:10px;">
+            <h2 style="color:white;text-align:center;">Streamlit Price Prediction ML App </h2>
+            </div>
+            """
+
             st.write("---------------")
             choice_1 = st.selectbox(label='Column VS RENT_AMOUNT',options=['balconies','bathroom','facing','floor','furnishingDesc','gym','isMaintenance','lift','parking','property_age','totalFloor','type_bhk','waterSupply'])
             #choice_2 = st.selectbox(label='Select the second column for Box plot:',options=['balconies','bathroom','facing','floor','furnishingDesc','gym','isMaintenance','lift','parking','property_age','totalFloor','type_bhk','waterSupply'])        
